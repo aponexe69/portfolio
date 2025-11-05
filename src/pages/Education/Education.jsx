@@ -28,7 +28,7 @@ const EducationSection = () => {
       degree: "Higher Secondary Certificate (HSC)",
       school: "BCIC College, Mirpur ",
       mascot: "📗",
-      year: "2025-2027",
+      year: "2024-2026",
       achievements: ["Loading"],
       skills: ["Mathematics", "Physics", "Chemistry", "Biology"],
       description:
