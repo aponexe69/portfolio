@@ -9,7 +9,7 @@ const projects = [
     description:
       "A website for the BCIC IT Club, showcasing events, members, and resources.",
     src: "rock.jpg",
-    link: "https://i.postimg.cc/DwgWTfP0/Annotation-2025-03-19-113338.png",
+    link: "https://blogger.googleusercontent.com/img/a/AVvXsEgmpnZ8CBb8JViM9XURA3r1ERtzVL3UFhHLZuanc_fqePyscciipaUEGXCPLZoQ602PpTUAH8q4DVLAQMWWkG-nn_deqgjRBauvees1aLZH9wK-Tl66gH14ztaCO5gynevR6C1dsYGp1PicT19aIWlCe6cecjW2aaJvMfvON1UxRQtHYtP3wEYIoQZ3bMtu",
     color: "#5196fd",
     githubLink: "https://github.com/aponexe69",
     liveLink: "https://bcic-itclub.blogspot.com/",
