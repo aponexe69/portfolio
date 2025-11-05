@@ -50,7 +50,7 @@ export default function Hero() {
 
   const [code] = useState(`
 const profile = {
-    name: 'Nazmul Hossain',
+    name: 'Asadujjaman Apon',
     title: 'Full-Stack Developer | Cloud Enthusiast | Problem Solver',
     skills: [
         'React', 'NextJS', 'Redux', 'Express',
@@ -190,7 +190,7 @@ const profile = {
                     I&apos;m
                     <span className="typing-effect gradient-text">
                       {" "}
-                      Nazmul Hossain
+                      Asadujjaman Apon
                     </span>
                   </span>
                 </h1>
@@ -211,7 +211,7 @@ const profile = {
               {/* Description */}
               <div className="relative mb-8 sm:mb-12 max-w-xl">
                 <p className="text-base sm:text-xl text-gray-300/90 leading-relaxed">
-                  JavaScript lover 🚀 | OlovaJS creator 🔧 | Crafting frameworks
+                  JavaScript lover 🚀 |  | Crafting frameworks
                   and coding the future 💻✨
                 </p>
               </div>
@@ -220,7 +220,7 @@ const profile = {
               <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 animate__animated animate__fadeInUp animate__delay-2s">
                 {/* View Projects Button */}
                 <a
-                  href="https://github.com/seraprogrammer"
+                  href="https://github.com/aponexe69"
                   className="group relative inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-teal-400 p-0.5 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_0_2rem_-0.5rem_#60A5FA]"
                 >
                   <span className="block w-full px-6 sm:px-8 py-3 sm:py-4 rounded-[11px] bg-gray-900 transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-teal-400">

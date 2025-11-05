@@ -5,44 +5,44 @@ import PropTypes from "prop-types";
 
 const projects = [
   {
-    title: "Olova! A Lightweight JavaScript Library",
+    title: "BCIC IT CLUB Website",
     description:
-      "A lightweight JavaScript library for creating beautiful, responsive UI components.",
+      "A website for the BCIC IT Club, showcasing events, members, and resources.",
     src: "rock.jpg",
     link: "https://i.postimg.cc/DwgWTfP0/Annotation-2025-03-19-113338.png",
     color: "#5196fd",
-    githubLink: "https://github.com/olovajs/olova",
-    liveLink: "https://olova.js.org/",
+    githubLink: "https://github.com/aponexe69",
+    liveLink: "https://bcic-itclub.blogspot.com/",
   },
   {
-    title: "A sleek portfolio built with React and Tailwind CSS ",
+    title: "A Quiz App  ",
     description:
-      "A sleek portfolio built with React and Tailwind CSS to showcase your skills, projects, and experience in a modern design.",
+      "A quiz application built with React and Tailwind CSS, featuring multiple-choice questions, real-time scoring, and a user-friendly interface.",
     src: "tree.jpg",
-    link: "https://i.postimg.cc/J75CKyrs/Annotation-2025-04-01-203959.png",
+    link: "https://blogger.googleusercontent.com/img/a/AVvXsEiSC8Ldfq3aKpgI2ribpFM6kfiF5z79bLEPxJn4MVenZSn5uTxLIhY8UuEL0EaTTqmkcTs-XsQmq6VaE8L7kLjai-CJbHP1adVBvygqFWcc7hP1p2xTuJcBTmHLO4gwIjC7SHhOysEsdHZeWDjrK--KRgb8yIpAesD4SwYY-gO5KOII2-J0_0_pN8iNKuy1",
     color: "#8f89ff",
-    githubLink: "https://github.com/seraprogrammer/portfolio",
-    liveLink: "https://codervai.vercel.app",
+    githubLink: "https://github.com/aponexe69/quiz",
+    liveLink: "https://aponexe69.github.io/quiz/",
   },
   {
-    title: "🚀 CodeWhisperer",
+    title: "🚀 Apon's College Project",
     description:
-      "🚀 CodeWhisperer A powerful online code editor built with React and Tailwind CSS. Featuring real-time code execution, syntax highlighting, multi-language support, and a sleek UI. Start coding instantly! 💻✨",
+      "🚀 A blogger project made in my college days.",
     src: "water.jpg",
-    link: "https://i.postimg.cc/J4jPVFY0/Annotation-2025-04-01-204723.png",
+    link: "https://blogger.googleusercontent.com/img/a/AVvXsEi7ETyNWfOS8liCVoqjPwKIJuP4muTcvtLR5ybh-PHMsoZuED6oO5fKqToPZRDEz7Wbtvwnjx9cpSLHB7E2hlFeBHwt9NO86xUYHYG1yPF9nwe71LgiBp8TPLU4xmd9-MqNvlX4I5YapdQukkLxrbg5HRr1Q9BVmRL7oT1e9aL23BdyX_HfCUV83pmRd-Ej",
     color: "#fff",
-    githubLink: "https://github.com/seraprogrammer/codewhisperer",
-    liveLink: "https://codewhisperer.vercel.app/",
+    githubLink: "https://github.com/aponexe69",
+    liveLink: "https://aponcollege.blogspot.com/",
   },
   {
-    title: "CodeKori 🔥",
+    title: "Animated matrix Website 🔥",
     description:
-      "CodeKori is a powerful online code editor built with React and Tailwind CSS. Featuring real-time code execution, syntax highlighting, multi-language support, and a sleek UI. Start coding instantly! 💻✨",
+      "A visually captivating website featuring an animated matrix background effect using HTML, CSS, and JavaScript.",
     src: "house.jpg",
-    link: "https://i.postimg.cc/cHQr4fpR/Annotation-2025-04-01-205350.png",
+    link: "https://blogger.googleusercontent.com/img/a/AVvXsEg8dQX-OYwUgm0LoD1c5lmGFA_Isdgpy-I0bETM5471gRc-TWp4e8lk5pNDXIZAR-NHEavQ38BKfrX-8rtV_7yN_Q0VTSYGcxVCZT4MAEMZUvVnDeBPe7l2MexiMlaaU9aCwvu000zb0jVxs1di9t_9zIXqGtNR3Xf8NS6zOI9pOhbT4vBew9kpBVmJgGPW",
     color: "#ed649e",
-    githubLink: "https://github.com/seraprogrammer/CodeKori",
-    liveLink: "https://codekori.js.org",
+    githubLink: "https://github.com/aponexe69/portfolio-v3",
+    liveLink: "https://aponexe69.github.io/portfolio-v3/",
   },
 ];
 
