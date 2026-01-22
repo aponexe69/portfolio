@@ -1,16 +1,101 @@
-import React, { useState } from "react";
-import { Send, Phone, MapPin, Mail } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { Send, MapPin, Mail, Github, Linkedin, Twitter, CheckCircle, AlertCircle } from "lucide-react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+
+const socialLinks = [
+  { icon: Github, href: "https://github.com/aponexe69", label: "GitHub", color: "#6e5494" },
+  { icon: Linkedin, href: "#", label: "LinkedIn", color: "#0077b5" },
+  { icon: Twitter, href: "#", label: "Twitter", color: "#1da1f2" },
+];
+
+const contactInfo = [
+  { icon: Mail, label: "Email", value: "apon10080@gmail.com", color: "purple" },
+  { icon: MapPin, label: "Location", value: "Mirpur, Dhaka", color: "pink" },
+];
+
+// Floating label input component
+const FloatingInput = ({ label, type = "text", value, onChange, error, ...props }) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const hasValue = value && value.length > 0;
+
+  return (
+    <div className="relative">
+      <motion.input
+        type={type}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        className={`w-full px-4 py-4 pt-6 rounded-xl bg-gray-900/50 border-2 transition-all duration-300 outline-none peer
+          ${error
+            ? "border-red-500/50 focus:border-red-500"
+            : "border-gray-700/50 focus:border-cyan-500 hover:border-gray-600"
+          }
+        `}
+        placeholder=" "
+        {...props}
+      />
+      <label
+        className={`absolute left-4 transition-all duration-300 pointer-events-none
+          ${isFocused || hasValue
+            ? "top-2 text-xs text-cyan-400"
+            : "top-1/2 -translate-y-1/2 text-gray-500"
+          }
+        `}
+      >
+        {label}
+      </label>
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="text-red-400 text-sm mt-2 flex items-center gap-1"
+          >
+            <AlertCircle className="w-3 h-3" />
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// Toast notification component
+const Toast = ({ message, type, onClose }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 50, scale: 0.9 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, y: 50, scale: 0.9 }}
+    className={`fixed bottom-8 right-8 z-50 px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3
+      ${type === "success"
+        ? "bg-gradient-to-r from-green-500/90 to-emerald-500/90"
+        : "bg-gradient-to-r from-red-500/90 to-pink-500/90"
+      } backdrop-blur-sm`}
+  >
+    {type === "success" ? (
+      <CheckCircle className="w-5 h-5 text-white" />
+    ) : (
+      <AlertCircle className="w-5 h-5 text-white" />
+    )}
+    <span className="text-white font-medium">{message}</span>
+  </motion.div>
+);
 
 export default function Contact() {
+  const containerRef = useRef(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
   });
-
   const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
     let tempErrors = {};
@@ -25,7 +110,7 @@ export default function Contact() {
       tempErrors.email = "Email is required";
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      tempErrors.email = "Email is invalid";
+      tempErrors.email = "Please enter a valid email";
       isValid = false;
     }
 
@@ -47,20 +132,21 @@ export default function Contact() {
     e.preventDefault();
 
     if (!validateForm()) {
-      setStatus("Please fill in all required fields correctly.");
+      setToast({ message: "Please fill in all required fields", type: "error" });
+      setTimeout(() => setToast(null), 3000);
       return;
     }
 
-    // Create a new FormData object to send to Web3Forms API
+    setIsSubmitting(true);
+
     const form = new FormData();
-    form.append("access_key", "90f4b8af-e590-42b0-beaf-10b18f66a703"); // Replace with your Web3Forms access key
+    form.append("access_key", "90f4b8af-e590-42b0-beaf-10b18f66a703");
     form.append("name", formData.name);
     form.append("email", formData.email);
     form.append("subject", formData.subject || "New Contact Form Submission");
     form.append("message", formData.message);
 
     try {
-      // Send form data to Web3Forms API
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: form,
@@ -69,169 +155,235 @@ export default function Contact() {
       const result = await response.json();
 
       if (response.ok) {
-        setStatus("Message sent successfully!");
-        setFormData({
-          name: "",
-          email: "",
-          subject: "",
-          message: "",
-        });
+        setToast({ message: "Message sent successfully! 🎉", type: "success" });
+        setFormData({ name: "", email: "", subject: "", message: "" });
         setErrors({});
       } else {
-        setStatus(result.message || "There was an error sending your message.");
+        setToast({ message: result.message || "Failed to send message", type: "error" });
       }
     } catch (error) {
-      setStatus("An error occurred. Please try again.");
-      console.error("Error:", error);
+      setToast({ message: "An error occurred. Please try again.", type: "error" });
     }
+
+    setIsSubmitting(false);
+    setTimeout(() => setToast(null), 4000);
   };
 
   return (
-    <main
-      className="pt-20 lg:pt-[0rem] bg-[#04081A]
- text-white min-h-screen"
-    >
-      <section className="hero min-h-screen flex items-center relative px-4 sm:px-6 lg:px-8">
-        <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <main className="bg-[#04081A] text-white min-h-screen relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+
+      <motion.div
+        className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)" }}
+        animate={{ scale: [1, 1.2, 1], x: [0, 30, 0] }}
+        transition={{ duration: 10, repeat: Infinity }}
+      />
+      <motion.div
+        className="absolute bottom-1/4 -right-32 w-[600px] h-[600px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(34, 211, 238, 0.08) 0%, transparent 70%)" }}
+        animate={{ scale: [1, 1.3, 1], x: [0, -30, 0] }}
+        transition={{ duration: 12, repeat: Infinity }}
+      />
+
+      <section ref={containerRef} className="min-h-screen flex items-center relative px-4 sm:px-6 lg:px-8 py-20 lg:py-0">
+        <div className="container mx-auto max-w-6xl">
+          {/* Header */}
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: -30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.span
+              className="inline-block px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm mb-6"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: 0.2 }}
+            >
+              Let's Connect
+            </motion.span>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                Get in Touch
+              </span>
+            </h1>
+            <p className="text-gray-400 text-lg max-w-xl mx-auto">
+              Have a question or want to work together? I'd love to hear from you!
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-5 gap-12 items-start">
             {/* Contact Info */}
-            <div className="space-y-8">
+            <motion.div
+              className="lg:col-span-2 space-y-8"
+              initial={{ opacity: 0, x: -50 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              {/* Contact cards */}
+              <div className="space-y-4">
+                {contactInfo.map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="flex items-center gap-4 p-4 rounded-xl bg-gray-900/50 border border-gray-800/50 hover:border-cyan-500/30 transition-colors group"
+                    whileHover={{ scale: 1.02, x: 5 }}
+                  >
+                    <div className={`p-3 rounded-xl bg-${item.color}-500/10 group-hover:bg-${item.color}-500/20 transition-colors`}>
+                      <item.icon className={`w-6 h-6 text-${item.color}-400`} />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white">{item.label}</h3>
+                      <p className="text-gray-400">{item.value}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Social Links */}
               <div>
-                <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                  Get in Touch
-                </h2>
-                <p className="text-gray-300 text-lg">
-                  Have a question or want to work together? Drop us a message!
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-purple-500/10 p-3 rounded-lg">
-                    <Mail className="w-6 h-6 text-purple-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Email</h3>
-                    <p className="text-gray-400">apon10080@gmail.com</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <div className="bg-pink-500/10 p-3 rounded-lg">
-                    <MapPin className="w-6 h-6 text-pink-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Location</h3>
-                    <p className="text-gray-400">Mirpur, Dhaka</p>
-                  </div>
+                <h3 className="text-lg font-semibold text-white mb-4">Follow Me</h3>
+                <div className="flex gap-4">
+                  {socialLinks.map((social, idx) => (
+                    <motion.a
+                      key={idx}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 rounded-xl bg-gray-900/50 border border-gray-800/50 flex items-center justify-center hover:border-cyan-500/30 transition-all"
+                      whileHover={{ scale: 1.1, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      style={{ "--hover-color": social.color }}
+                    >
+                      <social.icon className="w-5 h-5 text-gray-400 hover:text-white transition-colors" />
+                    </motion.a>
+                  ))}
                 </div>
               </div>
-            </div>
+
+              {/* Decorative code block */}
+              <motion.div
+                className="hidden lg:block p-4 rounded-xl bg-gray-900/30 border border-gray-800/30 font-mono text-sm"
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.5 }}
+              >
+                <div className="text-gray-500">// Let's build something amazing</div>
+                <div>
+                  <span className="text-purple-400">const</span>{" "}
+                  <span className="text-cyan-400">collaboration</span> ={" "}
+                  <span className="text-green-400">"success"</span>;
+                </div>
+              </motion.div>
+            </motion.div>
 
             {/* Contact Form */}
-            <div className="backdrop-blur-lg bg-white/5 p-8 rounded-2xl shadow-xl">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 gap-6">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Your Name"
-                      className={`w-full px-4 py-3 rounded-lg bg-white/5 border ${
-                        errors.name ? "border-red-500" : "border-gray-700"
-                      } focus:border-blue-500 focus:outline-none transition-colors`}
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
-                    />
-                    {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                    )}
-                  </div>
+            <motion.div
+              className="lg:col-span-3"
+              initial={{ opacity: 0, x: 50 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="relative">
+                {/* Glow effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 rounded-2xl blur-xl" />
 
-                  <div>
-                    <input
-                      type="email"
-                      placeholder="Your Email"
-                      className={`w-full px-4 py-3 rounded-lg bg-white/5 border ${
-                        errors.email ? "border-red-500" : "border-gray-700"
-                      } focus:border-blue-500 focus:outline-none transition-colors`}
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
+                <div className="relative backdrop-blur-xl bg-gray-900/50 p-8 rounded-2xl border border-gray-800/50">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FloatingInput
+                        label="Your Name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        error={errors.name}
+                      />
+                      <FloatingInput
+                        label="Your Email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        error={errors.email}
+                      />
+                    </div>
 
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Subject"
-                      className={`w-full px-4 py-3 rounded-lg bg-white/5 border ${
-                        errors.subject ? "border-red-500" : "border-gray-700"
-                      } focus:border-blue-500 focus:outline-none transition-colors`}
+                    <FloatingInput
+                      label="Subject"
                       value={formData.subject}
-                      onChange={(e) =>
-                        setFormData({ ...formData, subject: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      error={errors.subject}
                     />
-                    {errors.subject && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.subject}
-                      </p>
-                    )}
-                  </div>
 
-                  <div>
-                    <textarea
-                      placeholder="Your Message"
-                      rows="4"
-                      className={`w-full px-4 py-3 rounded-lg bg-white/5 border ${
-                        errors.message ? "border-red-500" : "border-gray-700"
-                      } focus:border-blue-500 focus:outline-none transition-colors resize-none`}
-                      value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                    ></textarea>
-                    {errors.message && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.message}
-                      </p>
-                    )}
-                  </div>
+                    <div className="relative">
+                      <motion.textarea
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        rows="5"
+                        className={`w-full px-4 py-4 pt-6 rounded-xl bg-gray-900/50 border-2 transition-all duration-300 outline-none resize-none
+                          ${errors.message
+                            ? "border-red-500/50 focus:border-red-500"
+                            : "border-gray-700/50 focus:border-cyan-500 hover:border-gray-600"
+                          }
+                        `}
+                        placeholder=" "
+                      />
+                      <label className="absolute left-4 top-2 text-xs text-cyan-400 pointer-events-none">
+                        Your Message
+                      </label>
+                      <AnimatePresence>
+                        {errors.message && (
+                          <motion.p
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="text-red-400 text-sm mt-2 flex items-center gap-1"
+                          >
+                            <AlertCircle className="w-3 h-3" />
+                            {errors.message}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    <motion.button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="magnetic w-full relative overflow-hidden rounded-xl font-semibold py-4 px-6 text-white transition-all disabled:opacity-50"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <span className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500" />
+                      <span className="absolute inset-0 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 opacity-0 hover:opacity-100 transition-opacity" />
+                      <span className="relative flex items-center justify-center gap-2">
+                        {isSubmitting ? (
+                          <>
+                            <motion.div
+                              className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            Send Message
+                            <Send className="w-4 h-4" />
+                          </>
+                        )}
+                      </span>
+                    </motion.button>
+                  </form>
                 </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-6 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:opacity-90 transition-opacity"
-                >
-                  <span>Send Message</span>
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
-
-              {/* Status Message */}
-              {status && (
-                <div
-                  className={`mt-4 text-center ${
-                    status.includes("success")
-                      ? "text-green-400"
-                      : "text-red-400"
-                  }`}
-                >
-                  <p>{status}</p>
-                </div>
-              )}
-            </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toast && <Toast message={toast.message} type={toast.type} />}
+      </AnimatePresence>
     </main>
   );
 }
